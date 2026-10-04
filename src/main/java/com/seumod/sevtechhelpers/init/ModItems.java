@@ -15,7 +15,7 @@ public class ModItems {
     public static void registerItems(RegistryEvent.Register<Item> event) {
         helperWhistle = new ItemHelperWhistle();
         helperWhistle.setRegistryName(SevTechHelpers.MODID, "helper_whistle");
-        helperWhistle.setUnlocalizedName(SevTechHelpers.MODID + ".helper_whistle");
+        helperWhistle.setTranslationKey(SevTechHelpers.MODID + ".helper_whistle");  // <- mudou
         event.getRegistry().register(helperWhistle);
     }
 }

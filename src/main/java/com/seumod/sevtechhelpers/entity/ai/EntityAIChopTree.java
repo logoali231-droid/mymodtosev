@@ -7,6 +7,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.item.Item;   // <- se ainda não tiver
 
 public class EntityAIChopTree extends EntityAIBase {
     private final EntityLumberjack entity;
@@ -81,13 +82,11 @@ public class EntityAIChopTree extends EntityAIBase {
     private ItemStack findSapling() {
         for (int i = 0; i < entity.getInventory().getSizeInventory(); i++) {
             ItemStack stack = entity.getInventory().getStackInSlot(i);
-            if (stack.getItem() == net.minecraft.init.Items.SAPLING) {
-                return stack;
-            }
+            String id = stack.getItem().getRegistryName().toString().toLowerCase();
+            if (id.contains("sapling")) return stack;
         }
         return ItemStack.EMPTY;
     }
-
     private BlockPos findTree(World world, BlockPos center, int radius) {
         for (BlockPos pos : BlockPos.getAllInBoxMutable(center.add(-radius, -radius, -radius), center.add(radius, radius, radius))) {
             IBlockState state = world.getBlockState(pos);

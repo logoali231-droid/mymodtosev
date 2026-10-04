@@ -17,7 +17,7 @@ public class ModBlocks {
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         totem = new BlockTotem();
         totem.setRegistryName(SevTechHelpers.MODID, "totem");
-        totem.setUnlocalizedName(SevTechHelpers.MODID + ".totem");
+        totem.setTranslationKey(SevTechHelpers.MODID + ".totem");  // <- mudou
         event.getRegistry().register(totem);
     }
 
@@ -25,7 +25,7 @@ public class ModBlocks {
     public static void registerItemBlocks(RegistryEvent.Register<Item> event) {
         ItemBlock ib = new ItemBlock(totem);
         ib.setRegistryName(totem.getRegistryName());
-        ib.setUnlocalizedName(totem.getUnlocalizedName());
+        ib.setTranslationKey(totem.getTranslationKey());          // <- mudou
         event.getRegistry().register(ib);
     }
 }
