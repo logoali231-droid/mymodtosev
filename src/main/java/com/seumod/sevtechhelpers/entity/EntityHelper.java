@@ -5,13 +5,12 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 public abstract class EntityHelper extends EntityCreature {
     private final InventoryBasic inventory = new InventoryBasic("helper", false, 9);
-    private boolean active = false;
+    private boolean active = true; // <-- já nasce ativo
 
     public EntityHelper(World worldIn) {
         super(worldIn);
@@ -26,7 +25,8 @@ public abstract class EntityHelper extends EntityCreature {
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.28D);
+        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(32.0D);
     }
 
     public InventoryBasic getInventory() { return inventory; }

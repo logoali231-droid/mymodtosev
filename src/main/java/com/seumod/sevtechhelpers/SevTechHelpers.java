@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 public class SevTechHelpers {
     public static final String MODID = "sevtechhelpers";
     public static final String NAME = "SevTech Helpers";
-    public static final String VERSION = "3.0.0";
+    public static final String VERSION = "3.1.0";
 
     @Mod.Instance(MODID)
     public static SevTechHelpers instance;
@@ -19,12 +19,11 @@ public class SevTechHelpers {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         ModEntities.registerEntities();
-        ModBlocks.register();
-        ModItems.register();
+        // ModBlocks e ModItems agora registram via @SubscribeEvent (RegistryEvent)
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        // Registro de receitas pode ser feito aqui ou via JSON
+        // Receitas e renderizadores, se necessário
     }
 }

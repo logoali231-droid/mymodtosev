@@ -8,28 +8,30 @@ import net.minecraft.world.World;
 
 public class GeolosysIntegration {
 
-    /**
-     * Verifica se um bloco é um minério, usando nome de registro como fallback
-     * (compatível com Geolosys e outros mods de minério do SevTech).
-     */
+    /** Detecta minério por nome de registro (compatível com Geolosys, Primal Core, IE, etc). */
     public static boolean isOre(IBlockState state) {
         Block block = state.getBlock();
-        ResourceLocation registryName = block.getRegistryName();
-        if (registryName == null) return false;
-        String name = registryName.toString().toLowerCase();
-        // Padrões de minério do SevTech (Geolosys, Primal Core, etc.)
-        return name.contains("ore") || name.contains("geolosys") || name.contains("cluster")
-                || name.contains("sample") || name.contains("deposit");
+        ResourceLocation rn = block.getRegistryName();
+        if (rn == null) return false;
+        String name = rn.toString().toLowerCase();
+        return name.contains("ore")
+                || name.contains("geolosys")
+                || name.contains("cluster")
+                || name.contains("sample")
+                || name.contains("deposit")
+                || name.contains("poor_")
+                || name.contains("dense_");
     }
 
-    /**
-     * Encontra o minério mais próximo num raio, usando uma varredura local.
-     */
+    /** Varredura local em raio. Retorna BlockPos imutável (cópia segura). */
     public static BlockPos findNearestOre(World world, BlockPos center, int radius) {
-        for (BlockPos pos : BlockPos.getAllInBoxMutable(center.add(-radius, -radius, -radius), center.add(radius, radius, radius))) {
+        for (BlockPos pos : BlockPos.getAllInBoxMutable(
+                center.add(-radius, -radius, -radius),
+                center.add( radius,  radius,  radius))) {
+
             IBlockState state = world.getBlockState(pos);
             if (isOre(state)) {
-                return pos;
+                return pos.toImmutable(); // <-- CORREÇÃO CRÍTICA
             }
         }
         return null;
