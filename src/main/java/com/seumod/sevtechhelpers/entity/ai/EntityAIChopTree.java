@@ -21,6 +21,7 @@ public class EntityAIChopTree extends EntityAIBase {
 
     @Override
     public boolean shouldExecute() {
+        if (entity.isFull()) return false;
         if (!entity.isActive()) return false;
         targetTree = findTree(entity.world, entity.getPosition(), 16);
         return targetTree != null;
@@ -33,6 +34,11 @@ public class EntityAIChopTree extends EntityAIBase {
 
     @Override
     public void updateTask() {
+
+        if (entity.isFull()) {
+            targetTree = null; // ou targetOre / targetCrop
+            return;
+        }
         if (targetTree == null) return;
         double dist = entity.getDistanceSqToCenter(targetTree);
         if (dist < 4.0D) {

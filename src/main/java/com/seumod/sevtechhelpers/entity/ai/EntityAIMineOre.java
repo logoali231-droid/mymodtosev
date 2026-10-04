@@ -22,6 +22,8 @@ public class EntityAIMineOre extends EntityAIBase {
     @Override
     public boolean shouldExecute() {
         if (!entity.isActive()) return false;
+
+        if (!entity.isActive()) return false;
         targetOre = GeolosysIntegration.findNearestOre(entity.world, entity.getPosition(), 32);
         return targetOre != null;
     }
@@ -33,6 +35,11 @@ public class EntityAIMineOre extends EntityAIBase {
 
     @Override
     public void updateTask() {
+
+        if (entity.isFull()) {
+            targetOre = null; // ou targetOre / targetCrop
+            return;
+        }
         if (targetOre == null) return;
         if (entity.getDistanceSqToCenter(targetOre) < 4.0D) {
             World world = entity.world;

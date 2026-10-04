@@ -34,6 +34,11 @@ public class EntityAIHarvestCrop extends EntityAIBase {
 
     @Override
     public void updateTask() {
+
+        if (entity.isFull()) {
+            targetCrop = null; // ou targetOre / targetCrop
+            return;
+        }
         if (targetCrop == null) return;
         double dist = entity.getDistanceSqToCenter(targetCrop);
         if (dist < 4.0D) {
