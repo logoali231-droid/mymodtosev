@@ -11,6 +11,8 @@ import net.minecraft.world.World;
 public class EntityAIMineOre extends EntityAIBase {
     private final EntityMiner entity;
     private BlockPos targetOre;
+    private int mineTimer = 0;
+    private static final int MAX_MINE_TIME = 30; // 1.5 segundos por minério
 
     public EntityAIMineOre(EntityMiner entity) {
         this.entity = entity;
@@ -20,7 +22,6 @@ public class EntityAIMineOre extends EntityAIBase {
     @Override
     public boolean shouldExecute() {
         if (!entity.isActive()) return false;
-        // Usa a API do Geolosys para encontrar o depósito mais próximo
         targetOre = GeolosysIntegration.findNearestOre(entity.world, entity.getPosition(), 32);
         return targetOre != null;
     }
@@ -37,8 +38,17 @@ public class EntityAIMineOre extends EntityAIBase {
             World world = entity.world;
             IBlockState state = world.getBlockState(targetOre);
             if (GeolosysIntegration.isOre(state)) {
+                if (mineTimer < MAX_MINE_TIME) {
+                    mineTimer++;
+                    return;
+                }
+                mineTimer = 0;
                 world.destroyBlock(targetOre, true);
-                entity.getInventory().addItem(new ItemStack(state.getBlock(), 1));
+                ItemStack oreStack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
+                if (!entity.getInventory().addItem(oreStack).isEmpty()) {
+                    targetOre = null;
+                    return;
+                }
             }
             targetOre = null;
         } else if (entity.getNavigator().noPath()) {

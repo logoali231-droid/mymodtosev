@@ -19,12 +19,12 @@ public class BlockTotem extends Block {
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!worldIn.isRemote) {
-            // Invoca um ajudante com base no item que o jogador está segurando
             EntityHelper helper = null;
+            // Modo baseado no item na mão (ex: apito invoca lenhador)
             if (playerIn.getHeldItem(hand).getItem() == com.seumod.sevtechhelpers.init.ModItems.helperWhistle) {
                 helper = new EntityLumberjack(worldIn);
             } else {
-                helper = new EntityMiner(worldIn); // Padrão: minerador
+                helper = new EntityMiner(worldIn); // Padrão
             }
             if (helper != null) {
                 helper.setPosition(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);

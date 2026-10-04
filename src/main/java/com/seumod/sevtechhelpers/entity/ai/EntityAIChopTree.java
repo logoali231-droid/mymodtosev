@@ -12,6 +12,7 @@ public class EntityAIChopTree extends EntityAIBase {
     private final EntityLumberjack entity;
     private BlockPos targetTree;
     private int chopTimer = 0;
+    private static final int MAX_CHOP_TIME = 20; // 1 segundo por bloco
 
     public EntityAIChopTree(EntityLumberjack entity) {
         this.entity = entity;
@@ -21,7 +22,6 @@ public class EntityAIChopTree extends EntityAIBase {
     @Override
     public boolean shouldExecute() {
         if (!entity.isActive()) return false;
-        // Procura por madeira num raio de 16 blocos
         targetTree = findTree(entity.world, entity.getPosition(), 16);
         return targetTree != null;
     }
@@ -37,19 +37,30 @@ public class EntityAIChopTree extends EntityAIBase {
         double dist = entity.getDistanceSqToCenter(targetTree);
         if (dist < 4.0D) {
             World world = entity.world;
-            // Corta o bloco da base e os de cima
-            for (int y = 0; y < 10; y++) {
+            // Corta a árvore de baixo para cima
+            for (int y = 0; y < 30; y++) {
                 BlockPos pos = targetTree.up(y);
                 IBlockState state = world.getBlockState(pos);
                 if (state.getBlock().isWood(world, pos)) {
+                    // Simula tempo de corte
+                    if (chopTimer < MAX_CHOP_TIME) {
+                        chopTimer++;
+                        return;
+                    }
+                    chopTimer = 0;
                     world.destroyBlock(pos, true);
-                    // Adiciona ao inventário (simplificado)
-                    entity.getInventory().addItem(new ItemStack(state.getBlock(), 1));
+                    // Adiciona ao inventário
+                    ItemStack logStack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
+                    if (!entity.getInventory().addItem(logStack).isEmpty()) {
+                        // Inventário cheio: para de cortar
+                        targetTree = null;
+                        return;
+                    }
                 } else {
                     break;
                 }
             }
-            // Tenta replantar uma muda se tiver
+            // Replanta uma muda se tiver
             ItemStack sapling = findSapling();
             if (!sapling.isEmpty()) {
                 world.setBlockState(targetTree, Blocks.SAPLING.getDefaultState());

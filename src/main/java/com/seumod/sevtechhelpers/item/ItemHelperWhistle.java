@@ -14,7 +14,6 @@ public class ItemHelperWhistle extends Item {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
         if (!worldIn.isRemote) {
-            // Ativa/desativa todos os ajudantes num raio de 32 blocos
             List<EntityHelper> helpers = worldIn.getEntitiesWithinAABB(EntityHelper.class, playerIn.getEntityBoundingBox().grow(32));
             for (EntityHelper helper : helpers) {
                 helper.setActive(!helper.isActive());

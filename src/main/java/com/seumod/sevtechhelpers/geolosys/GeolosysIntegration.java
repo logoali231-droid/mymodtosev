@@ -1,26 +1,31 @@
 package com.seumod.sevtechhelpers.geolosys;
 
-import com.oitsjustjose.geolosys.common.api.GeolosysAPI;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class GeolosysIntegration {
+
     /**
-     * Verifica se um bloco é um minério do Geolosys.
+     * Verifica se um bloco é um minério, usando nome de registro como fallback
+     * (compatível com Geolosys e outros mods de minério do SevTech).
      */
     public static boolean isOre(IBlockState state) {
-        return GeolosysAPI.isOre(state.getBlock());
+        Block block = state.getBlock();
+        ResourceLocation registryName = block.getRegistryName();
+        if (registryName == null) return false;
+        String name = registryName.toString().toLowerCase();
+        // Padrões de minério do SevTech (Geolosys, Primal Core, etc.)
+        return name.contains("ore") || name.contains("geolosys") || name.contains("cluster")
+                || name.contains("sample") || name.contains("deposit");
     }
 
     /**
-     * Encontra o minério mais próximo.
-     * A API do Geolosys pode ter um método para obter depósitos.
-     * Aqui usamos uma varredura com o filtro do Geolosys.
+     * Encontra o minério mais próximo num raio, usando uma varredura local.
      */
     public static BlockPos findNearestOre(World world, BlockPos center, int radius) {
-        // Tenta usar a API para obter depósitos (se disponível)
-        // Se não, faz uma varredura filtrada
         for (BlockPos pos : BlockPos.getAllInBoxMutable(center.add(-radius, -radius, -radius), center.add(radius, radius, radius))) {
             IBlockState state = world.getBlockState(pos);
             if (isOre(state)) {
